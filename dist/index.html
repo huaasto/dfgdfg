@@ -2,9 +2,6 @@
       if(sessionStorage.token || token) {
         token = sessionStorage.token
         sessionStorage.removeItem('token')
-      } 
-      else {
-        location.href = 'login'
       }
       fetch('/login',{
         method: 'POST',
