@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.d7689c5f5958c7af7c6a9c8b6700a19c.js"
+  "precache-manifest.174a90a22832e01e053b8876bc137b57.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "personal_world"});
