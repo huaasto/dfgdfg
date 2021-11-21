@@ -7,8 +7,8 @@
     "axios": "^0.24.0",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1",
-    "md5": "^2.3.0",
-    "koa-static-server": "^1.5.2"
+    "koa-static": "^5.0.0",
+    "md5": "^2.3.0"
   },
   "devDependencies": {},
   "scripts": {

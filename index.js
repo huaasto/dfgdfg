@@ -1,13 +1,13 @@
 const Koa = require('koa');
 const Router = require('koa-router');
-const server = require('koa-static-server');
+const serve = require('koa-static');
 const fs = require('fs')
 const axios = require('axios')
 const app = new Koa();
 var router = new Router();
 const { queryPostData } = require('./utils/public')
 const md5 = require('md5')
-const {setToken} = require('./utils/req')
+const { setToken } = require('./utils/req')
 var githubToken = ''
 
 const token = {
@@ -15,7 +15,7 @@ const token = {
 }
 
 const tokenRepository = {
-  powerfultoken: {id: 'powerfultoken', time: new Date('3000-1-1').getTime()}
+  powerfultoken: { id: 'powerfultoken', time: new Date('3000-1-1').getTime() }
 }
 
 // logger
@@ -33,39 +33,39 @@ app.use(async (ctx, next) => {
 
 router.get('/', async (ctx, next) => {
   // ctx.router available
-    ctx.type = 'html'
-    ctx.body = await fs.createReadStream('./page/mainpage.html');
+  ctx.type = 'html'
+  ctx.body = await fs.createReadStream('./dist/index.html');
 })
 
 // router.get('/main', async (ctx, next) => {
 //   // ctx.router available
 //   ctx.type = 'html'
-//   ctx.body = await fs.createReadStream('./page/mainpage.html');
+//   ctx.body = await fs.createReadStream('./pages/mainpage.html');
 // })
 
 router.get('/login', async (ctx, next) => {
   // ctx.router available
-  if(!ctx.query.code) {
-    ctx.redirect("https://github.com/login/oauth/authorize?client_id=b3ca02c369a385486e40")
+  if (!ctx.query.code) {
+    ctx.redirect("https://github.com/login/oauth/authorize?client_id=b3ca02c369a385486e40&scope=repo")
   } else {
     clearExpiredToken()
     const result = await getGithubToken(ctx.query.code)
     console.log(result)
     githubToken = result.access_token
     ctx.type = 'html'
-    ctx.body = await fs.createReadStream('./page/login.html');
+    ctx.body = await fs.createReadStream('./pages/login.html');
   }
-  
+
 })
 
-router.post('/login', async(ctx, next) => {
+router.post('/login', async (ctx, next) => {
   // ctx.router available
   const data = await queryPostData(ctx)
   const token = ctx.req.headers.token
-  if(dealToken({...data, token})) {
-    tokenRepository[md5(data.visitor + Date.now())] = {id:md5(data.visitor + Date.now()), time: Date.now()}
+  if (dealToken({ ...data, token })) {
+    tokenRepository[md5(data.visitor + Date.now())] = { id: md5(data.visitor + Date.now()), time: Date.now() }
     console.log(tokenRepository)
-    ctx.body = {code: 0, message: "success", token: md5(data.visitor + Date.now()), githubToken: githubToken};
+    ctx.body = { code: 0, message: "success", token: md5(data.visitor + Date.now()), githubToken: githubToken };
   } else {
     ctx.body = {
       code: 403,
@@ -74,7 +74,7 @@ router.post('/login', async(ctx, next) => {
   }
 })
 
-router.post('/getGithubToken', async(ctx, next) => {
+router.post('/getGithubToken', async (ctx, next) => {
   const data = await queryPostData(ctx)
   const result = await getGithubToken(data.code)
   ctx.body = result
@@ -84,11 +84,11 @@ router.post('/getGithubToken', async(ctx, next) => {
 app
   .use(router.routes())
   .use(router.allowedMethods())
-  .use(server({rootDir: 'dist', rootPath: './dist'}));
+  .use(serve('dist'));
 
 app.listen(3000);
 
-function dealToken({visitor, pwd, token}) {
+function dealToken({ visitor, pwd, token }) {
   // v:david p:123456
   console.log(md5('b3ca02c369a385486e40_' + visitor + pwd))
   return (md5('b3ca02c369a385486e40_' + visitor + pwd) === 'f383767a66314d9453ff2d487afe125a') || tokenRepository[token]
@@ -108,7 +108,7 @@ function getGithubToken(code) {
       client_id: 'b3ca02c369a385486e40',
       client_secret: 'cd3239dc7d7d52d84e7388e412bc89ed29c83ad0',
       code
-    },{
+    }, {
       headers: {
         Accept: 'application/json'
       }
