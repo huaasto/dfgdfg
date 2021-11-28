@@ -12,13 +12,15 @@ const { setToken } = require('./utils/req')
 
 const issue = require('./api/issue')
 
-
-
 var githubToken = ''
 
 const tokenRepository = {
   powerfultoken: { id: 'powerfultoken', time: new Date('3000-1-1').getTime() }
 }
+
+const urlWhiteList = [
+  '/login'
+]
 
 // logger
 
@@ -29,8 +31,11 @@ app.use(async (ctx, next) => {
 // x-response-time
 
 app.use(async (ctx, next) => {
+  const url = ctx.req.url
   const token = ctx.req.headers.token
-  if (ctx.req.method === 'POST' && !dealToken({ token })) {
+  if (urlWhiteList.include(url) || ctx.req.method !== 'POST') {
+    await next();
+  } else if (!dealToken({ token })) {
     ctx.body = {
       code: 403,
       message: "fail to identify visitor"
