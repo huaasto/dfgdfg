@@ -60,10 +60,10 @@ router.get('/', async (ctx, next) => {
 
 router.get('/login', async (ctx, next) => {
   // ctx.router available
+  clearExpiredToken()
   if (!ctx.query.code) {
     ctx.redirect("https://github.com/login/oauth/authorize?client_id=b3ca02c369a385486e40&scope=repo")
   } else {
-    clearExpiredToken()
     const result = await getGithubToken(ctx.query.code)
     console.log(result)
     githubToken = result.access_token
@@ -109,7 +109,7 @@ app.listen(3000);
 function dealToken({ visitor, pwd, token }) {
   // v:david p:123456
   console.log('dealToken', 'token:' + token, "visitor:" + md5('b3ca02c369a385486e40_' + visitor + pwd))
-  console.log(md5('b3ca02c369a385486e40_david123456') === 'f383767a66314d9453ff2d487afe125a')
+  // md5('b3ca02c369a385486e40_david123456') === 'f383767a66314d9453ff2d487afe125a'
   return (md5('b3ca02c369a385486e40_' + visitor + pwd) === 'f383767a66314d9453ff2d487afe125a') || tokenRepository[token]
 }
 

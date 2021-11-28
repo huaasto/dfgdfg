@@ -18,7 +18,8 @@ function createReq(url, headers = {}) {
   // 请求拦截器
   req.interceptors.request.use(
     (config) => {
-      reqData.token && (config.headers.Authorization = reqData.token);
+      reqData.token && (config.headers.Authorization = 'token ' + reqData.token);
+      console.log('githubToken:' + config.headers)
       return config;
     },
     (err) => {
