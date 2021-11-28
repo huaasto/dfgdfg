@@ -25,6 +25,7 @@ const urlWhiteList = [
 // logger
 
 app.use(async (ctx, next) => {
+  // ctx.set("Access-Control-Allow-Origin", 'http://try.compusrecorder.cf')
   await next();
 });
 
