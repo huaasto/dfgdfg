@@ -36,6 +36,7 @@ app.use(async (ctx, next) => {
   if (urlWhiteList.includes(url) || ctx.req.method !== 'POST') {
     await next();
   } else if (!dealToken({ token })) {
+    ctx.response.status = 403
     ctx.body = {
       code: 403,
       message: "fail to identify visitor"
@@ -83,6 +84,7 @@ router.post('/login', async (ctx, next) => {
     console.log(tokenRepository)
     ctx.body = { code: 0, message: "success", token: md5(data.visitor + Date.now()), githubToken: githubToken };
   } else {
+    ctx.response.status = 403
     ctx.body = {
       code: 403,
       message: "fail to identify visitor"
