@@ -1,5 +1,5 @@
 const axios = require('axios')
-const reqData = {token: ''}
+const reqData = { token: '' }
 
 function setToken(token) {
   token && (reqData.token = token)
@@ -18,7 +18,7 @@ function createReq(url, headers = {}) {
   // 请求拦截器
   req.interceptors.request.use(
     (config) => {
-      token && (config.headers.Authorization = token);
+      reqData.token && (config.headers.Authorization = reqData.token);
       return config;
     },
     (err) => {
@@ -40,7 +40,10 @@ function createReq(url, headers = {}) {
   return req;
 }
 
-const github = createReq('https://api.github.com/');
+const github = createReq(
+  'https://api.github.com',
+  { Authorization: 'token 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' }
+);
 
 
 function errHandle(status, data) {

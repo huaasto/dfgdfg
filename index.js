@@ -8,11 +8,13 @@ var router = new Router();
 const { queryPostData } = require('./utils/public')
 const md5 = require('md5')
 const { setToken } = require('./utils/req')
-var githubToken = ''
 
-const token = {
-  bcb266c259cc2cba3805eb3afb64f7f2: 9,
-}
+
+const issue = require('./api/issue')
+
+
+
+var githubToken = ''
 
 const tokenRepository = {
   powerfultoken: { id: 'powerfultoken', time: new Date('3000-1-1').getTime() }
@@ -27,8 +29,16 @@ app.use(async (ctx, next) => {
 // x-response-time
 
 app.use(async (ctx, next) => {
-  console.log(ctx.req.method)
-  await next();
+  const token = ctx.req.headers.token
+  if (ctx.req.method === 'POST' && !dealToken({ token })) {
+    ctx.body = {
+      code: 403,
+      message: "fail to identify visitor"
+    }
+  } else {
+    await next();
+  }
+
 });
 
 router.get('/', async (ctx, next) => {
@@ -80,6 +90,8 @@ router.post('/getGithubToken', async (ctx, next) => {
   ctx.body = result
 })
 
+router.use('/issue', issue);
+
 
 app
   .use(router.routes())
@@ -90,7 +102,7 @@ app.listen(3000);
 
 function dealToken({ visitor, pwd, token }) {
   // v:david p:123456
-  console.log(md5('b3ca02c369a385486e40_' + visitor + pwd))
+  console.log('dealToken', 'token:' + token, "visitor:" + md5('b3ca02c369a385486e40_' + visitor + pwd))
   return (md5('b3ca02c369a385486e40_' + visitor + pwd) === 'f383767a66314d9453ff2d487afe125a') || tokenRepository[token]
 }
 
@@ -119,6 +131,13 @@ function getGithubToken(code) {
     })
   })
 }
+
+
+
+
+
+// github token
+// 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
 
 
 
