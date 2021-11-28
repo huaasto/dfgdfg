@@ -33,7 +33,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
   const url = ctx.req.url
   const token = ctx.req.headers.token
-  if (urlWhiteList.include(url) || ctx.req.method !== 'POST') {
+  if (urlWhiteList.includes(url) || ctx.req.method !== 'POST') {
     await next();
   } else if (!dealToken({ token })) {
     ctx.body = {
