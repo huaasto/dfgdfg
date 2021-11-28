@@ -5,7 +5,7 @@ function setToken(token) {
   token && (reqData.token = token)
 }
 
-function createReq(url, headers = {}) {
+function createReq(url, headers = {}, tokenAppend) {
   // const source = axios.CancelToken.source();
   const req = axios.create({
     baseURL: url,
@@ -18,7 +18,7 @@ function createReq(url, headers = {}) {
   // 请求拦截器
   req.interceptors.request.use(
     (config) => {
-      reqData.token && (config.headers.Authorization = 'token ' + reqData.token);
+      reqData.token && (config.headers.Authorization = (tokenAppend ? tokenAppend + reqData.token : tokenAppend));
       console.log('githubToken:' + config.headers)
       return config;
     },
@@ -43,7 +43,8 @@ function createReq(url, headers = {}) {
 
 const github = createReq(
   'https://api.github.com',
-  { Authorization: 'token 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' }
+  { Authorization: 'token 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' },
+  'token '
 );
 
 
