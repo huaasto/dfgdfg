@@ -72,7 +72,7 @@ router.post('/login', async (ctx, next) => {
   // ctx.router available
   const data = await queryPostData(ctx)
   const token = ctx.req.headers.token
-  console.log({ ...data, token })
+  console.log(1, { ...data, token })
   if (dealToken({ ...data, token })) {
     tokenRepository[md5(data.visitor + Date.now())] = { id: md5(data.visitor + Date.now()), time: Date.now() }
     console.log(tokenRepository)
@@ -104,7 +104,7 @@ app.listen(3000);
 function dealToken({ visitor, pwd, token }) {
   // v:david p:123456
   console.log('dealToken', 'token:' + token, "visitor:" + md5('b3ca02c369a385486e40_' + visitor + pwd))
-  console.log(md5('b3ca02c369a385486e40_david123456'))
+  console.log(md5('b3ca02c369a385486e40_david123456') === 'f383767a66314d9453ff2d487afe125a')
   return (md5('b3ca02c369a385486e40_' + visitor + pwd) === 'f383767a66314d9453ff2d487afe125a') || tokenRepository[token]
 }
 
