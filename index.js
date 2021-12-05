@@ -24,6 +24,14 @@ const urlWhiteList = [
 
 // logger
 
+setInterval(() => {
+  axios.get('https://try.compusrecorder.cf/awake').then(res => {
+    console.log(res.data)
+  }).catch(err => {
+    console.log(err)
+  })
+}, 1000 * 60 * 3)
+
 app.use(async (ctx, next) => {
   // ctx.set("Access-Control-Allow-Origin", 'http://try.compusrecorder.cf')
   await next();
@@ -55,6 +63,9 @@ router.get('/', async (ctx, next) => {
   ctx.body = await fs.createReadStream('./dist/index.html');
 })
 
+router.get('/awake', (ctx) => {
+  ctx.body = { status: 1 }
+})
 // router.get('/main', async (ctx, next) => {
 //   // ctx.router available
 //   ctx.type = 'html'
