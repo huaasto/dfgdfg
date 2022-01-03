@@ -8,9 +8,10 @@ var router = new Router();
 const { queryPostData } = require('./utils/public')
 const md5 = require('md5')
 const { setToken } = require('./utils/req')
-
+const bodyparser = require('koa-body')
 
 const issue = require('./api/issue')
+const pics = require('./api/pics')
 
 var githubToken = ''
 
@@ -39,20 +40,34 @@ app.use(async (ctx, next) => {
 
 // x-response-time
 
+app.use(bodyparser({
+  enableTypes: ['json', 'form', 'text'],
+  multipart: true
+}))
+
 app.use(async (ctx, next) => {
   const url = ctx.req.url
   const token = ctx.req.headers.token
-  console.log(555, token)
-  if (urlWhiteList.includes(url) || ctx.req.method !== 'POST') {
-    await next();
-  } else if (!dealToken({ token })) {
-    ctx.response.status = 403
-    ctx.body = {
-      code: 403,
-      message: "fail to identify visitor"
-    }
+  ctx.set('Access-Control-Allow-Origin', ctx.header.origin); // 很奇怪的是，使用 * 会出现一些其他问题
+  ctx.set('Access-Control-Allow-Headers', 'content-type,token,authorization, githubtoken');
+  ctx.set('Access-Control-Allow-Methods', 'OPTIONS,GET,HEAD,PUT,POST,DELETE,PATCH')
+  console.log(111, ctx.req.headers)
+  ctx.req.headers.githubtoken && setToken(ctx.req.headers.githubtoken)
+  if (ctx.method == 'OPTIONS') {
+    ctx.body = 200;
   } else {
-    await next();
+    console.log(555, token)
+    if (urlWhiteList.includes(url) || ctx.req.method !== 'POST') {
+      await next();
+    } else if (!dealToken({ token })) {
+      ctx.response.status = 403
+      ctx.body = {
+        code: 403,
+        message: "fail to identify visitor"
+      }
+    } else {
+      await next();
+    }
   }
 
 });
@@ -112,6 +127,7 @@ router.post('/getGithubToken', async (ctx, next) => {
 })
 
 router.use('/issue', issue);
+router.use('/pics', pics);
 
 
 app

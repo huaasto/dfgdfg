@@ -18,8 +18,8 @@ function createReq(url, headers = {}, tokenAppend) {
   // 请求拦截器
   req.interceptors.request.use(
     (config) => {
-      reqData.token && (config.headers.Authorization = (tokenAppend ? tokenAppend + reqData.token : tokenAppend));
-      console.log('githubToken:' + config.headers)
+      reqData.token && (config.headers.Authorization = (tokenAppend ? tokenAppend + reqData.token : config.headers.Authorization));
+      console.log('githubToken:' + config.headers.Authorization)
       return config;
     },
     (err) => {
@@ -43,7 +43,7 @@ function createReq(url, headers = {}, tokenAppend) {
 
 const github = createReq(
   'https://api.github.com',
-  { Authorization: 'token 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' },
+  {},
   'token '
 );
 
