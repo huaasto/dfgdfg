@@ -1,6 +1,7 @@
-function queryPostData(ctx){
+function queryPostData(ctx) {
+  return JSON.parse(ctx.request.body)
   return new Promise((res) => {
-    var postData = ""; 
+    var postData = "";
     // 数据块接收中
     ctx.req.addListener("data", (chunk) => {
       postData += chunk;

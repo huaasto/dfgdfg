@@ -57,6 +57,7 @@ app.use(async (ctx, next) => {
     ctx.body = 200;
   } else {
     console.log(555, token)
+    console.log(urlWhiteList.includes(url))
     if (urlWhiteList.includes(url) || ctx.req.method !== 'POST') {
       await next();
     } else if (!dealToken({ token })) {
