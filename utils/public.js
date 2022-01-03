@@ -1,5 +1,6 @@
 function queryPostData(ctx) {
   return JSON.parse(ctx.request.body)
+  // 没办法获取表单
   return new Promise((res) => {
     var postData = "";
     // 数据块接收中
