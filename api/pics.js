@@ -20,7 +20,7 @@ router.post('/create', async (ctx) => {
   // const par = await queryPostData(ctx)
   const par = ctx.request.body
   console.log(par.message)
-  const data = await github.put('/repos/huaasto/pics/contents/' + par.name, par)
+  const data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
   // console.log(data)
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
