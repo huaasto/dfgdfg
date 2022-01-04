@@ -29,7 +29,7 @@ router.post('/create', async (ctx) => {
 
 router.post('/delete', async (ctx) => {
   const par = await queryPostData(ctx)
-  const data = await github.delete('/repos/huaasto/pics/contents' + par.path, par)
+  const data = await github.delete('/repos/huaasto/pics/contents' + par.path, { data: par })
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
 })
