@@ -28,7 +28,6 @@ router.post('/create', async (ctx) => {
 })
 
 router.post('/delete', async (ctx) => {
-  const par = ctx.request.body
   const par = await queryPostData(ctx)
   const data = await github.delete('/repos/huaasto/pics/contents' + par.path, par)
   ctx.body = data.data;
