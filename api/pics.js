@@ -3,8 +3,9 @@ const { github } = require('../utils/req')
 const { queryPostData } = require('../utils/public')
 
 
-router.post('/list', async (ctx) => {
-  const data = await github.get('/repos/huaasto/pics/contents')
+router.post('/list/:path', async (ctx) => {
+  const path = ctx.params.path
+  const data = await github.get('/repos/huaasto/pics/contents' + path)
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
 })
@@ -26,10 +27,10 @@ router.post('/create', async (ctx) => {
   // ctx.body = { "title": "这是一个 issue query 接口" };
 })
 
-router.post('/delete/:name', async (ctx) => {
-  const name = ctx.params.name
+router.post('/delete/:path', async (ctx) => {
+  const path = ctx.params.path
   const par = await queryPostData(ctx)
-  const data = await github.delete('/repos/huaasto/pics/contents/' + name, par)
+  const data = await github.delete('/repos/huaasto/pics/contents/' + path, par)
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
 })
