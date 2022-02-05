@@ -6,6 +6,7 @@ const { queryPostData } = require('../utils/public')
 router.post('/list', async (ctx) => {
   const par = await queryPostData(ctx)
   const path = par.path
+  console.log(path)
   const data = await github.get('/repos/huaasto/pics/contents' + (path || ''))
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
