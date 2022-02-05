@@ -67,6 +67,7 @@ app.use(async (ctx, next) => {
         message: "fail to identify visitor"
       }
     } else {
+      console.log('---------------------------校验通过-----------------------------------')
       await next();
     }
   }
