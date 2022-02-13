@@ -1,39 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet"
+    type="text/css">
   <link href="https://cdn.jsdelivr.net/npm/quasar@2.2.2/dist/quasar.prod.css" rel="stylesheet" type="text/css">
 </head>
+
 <body>
   <div id="q-app">
     <div style="max-width: 400px;margin: 200px auto;text-align: center;">
-      <q-form
-        @submit="onSubmit"
-        class="q-gutter-md"
-      >
-      <div>
-        <q-input
-          filled
-          v-model="visitor"
-          label="visitor"
-        />
-      </div>
-      <div>
-        <q-input
-          filled
-          type="pwd"
-          v-model="pwd"
-          label="password"
-        />
-      </div>
-      <div>
-        <q-btn label="Submit" type="submit" color="primary"/>
-      </div>
-    </q-form>
+      <q-form @submit="onSubmit" class="q-gutter-md">
+        <div>
+          <q-input filled v-model="visitor" label="visitor" />
+        </div>
+        <div>
+          <q-input filled type="pwd" v-model="pwd" label="password" />
+        </div>
+        <div>
+          <q-btn label="Submit" type="submit" color="primary" />
+        </div>
+      </q-form>
     </div>
   </div>
 
@@ -49,18 +40,18 @@
     //   routes: [], // `routes: routes` 的缩写
     // })
     const app = Vue.createApp({
-      setup () {
+      setup() {
         // const route = useRoute();
         const visitor = ref('')
         const pwd = ref('')
         function onSubmit() {
-          fetch('/login',{
+          fetch('/login', {
             method: 'POST',
             // headers: {
             //   token: 'powerfultoken'
             // },
             body: JSON.stringify({
-              visitor:visitor.value,
+              visitor: visitor.value,
               pwd: pwd.value
             })
           }).then(res => res.json()).then(data => {
@@ -68,7 +59,12 @@
             if (!data.code) {
               sessionStorage.setItem('token', data.token)
               sessionStorage.setItem('githubToken', data.githubToken)
+              localStorage.setItem('token', data.token)
+              localStorage.setItem('githubToken', data.githubToken)
+              localStorage.setItem('lastLoginTime', Date.now())
               location.href = '/'
+            } else {
+              alert(data.message)
             }
           })
         }
@@ -88,4 +84,5 @@
     app.mount('#q-app')
   </script>
 </body>
+
 </html>
