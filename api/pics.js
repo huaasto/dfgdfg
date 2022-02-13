@@ -23,20 +23,21 @@ router.post('/create', async (ctx) => {
   // const par = await queryPostData(ctx)
   const par = ctx.request.body
   let i = 0
-  async function recreate(i, par) {
-    const data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
-    if (!data.content && i < 5) {
-      return recreate(i++)
-    } else {
-      return data
-    }
-  }
-  const data = recreate(i, par)
+  const data = await recreate(i, par)
   // const data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
   // console.log(data)
   ctx.body = data.data;
   // ctx.body = { "title": "这是一个 issue query 接口" };
 })
+function recreate(i, par) {
+  return new Promise(async res => {
+    let data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
+    if (!data.data.content && i < 5) {
+      data = await recreate(i + 1, par)
+    }
+    res(data)
+  })
+}
 
 router.post('/delete', async (ctx) => {
   const par = await queryPostData(ctx)
