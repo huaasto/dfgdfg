@@ -32,7 +32,7 @@ router.post('/create', async (ctx) => {
   // const par = await queryPostData(ctx)
   const par = await queryPostData(ctx)
   let i = 0
-  const data = await recreate('/repos/huaasto/pics/contents', i, par)
+  const data = await recreate('/repos/huaasto/pics/contents', par)
   // const data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
   // console.log(data)
   // await wait(10000)
@@ -46,7 +46,7 @@ router.post('/create/mini', async (ctx) => {
   const par = await queryPostData(ctx)
   console.log(par)
   let i = 0
-  const data = await recreate('/repos/huaasto/minipics/contents', i, par)
+  const data = await recreate('/repos/huaasto/minipics/contents', par)
   // const data = await github.put('/repos/huaasto/pics/contents' + (par.path || '/') + par.name, par)
   // console.log(data)
   ctx.body = data.data;
@@ -57,14 +57,47 @@ function wait(ms) {
     setTimeout(res, ms)
   })
 }
-function recreate(url, i, par) {
+function recreate(url, par, i = 0) {
   console.log(url, par.name)
   return new Promise(async res => {
     let data = await github.put(url + (par.path || '/') + par.name, par)
     if (!data.data.content && i < 5) {
-      data = await recreate(url, i + 1, par)
+      data = await recreate(url, par, i + 1)
     }
     res(data)
+  })
+}
+
+
+router.post('/batchUpload', async (ctx) => {
+  const files = Object.values(ctx.request.files)
+  await Promise.allSettled(files.map(image => picToGithub(image)))
+  console.log(Object.values(ctx.request.files))
+  ctx.body = 200
+})
+
+function picToGithub(image) {
+
+}
+
+
+function useCompressor(file, option) {
+  return new Promise(res => {
+    new Compressor(
+      file,
+      Object.assign(
+        {
+          success(result) {
+            console.log(result)
+            res(result)
+          },
+          error(err) {
+            console.log(err.message)
+          }
+        },
+        option
+      )
+    )
   })
 }
 
